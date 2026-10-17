@@ -39,22 +39,22 @@ export const RecentBookingTicker: React.FC = () => {
   const current = RECENT_ACTIVITIES[currentIndex];
 
   return (
-    <div className="fixed bottom-20 left-4 z-30 max-w-xs sm:max-w-sm bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl p-3.5 shadow-xl text-right animate-in slide-in-from-bottom-5 duration-300 flex items-start gap-3">
-      <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
-        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+    <div className="fixed bottom-20 left-4 z-30 max-w-xs sm:max-w-sm bg-[#0E131F]/95 backdrop-blur-xl border border-amber-500/30 rounded-2xl p-4 shadow-2xl text-right animate-in slide-in-from-bottom-5 duration-300 flex items-start gap-3.5">
+      <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 mt-0.5 border border-amber-500/30">
+        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
       </div>
 
       <div className="flex-1 text-xs">
         <div className="flex items-center justify-between">
-          <span className="font-bold text-slate-900">
+          <span className="font-bold text-white">
             {current.name} ({current.city})
           </span>
-          <span className="text-[10px] text-slate-400 font-mono">
+          <span className="text-[10px] text-amber-400 font-mono">
             {current.time}
           </span>
         </div>
-        <p className="text-slate-600 mt-0.5">
-          قام بحجز <strong className="text-amber-800">{current.program}</strong>
+        <p className="text-slate-300 mt-1">
+          قام بحجز <strong className="text-amber-300">{current.program}</strong>
         </p>
       </div>
 

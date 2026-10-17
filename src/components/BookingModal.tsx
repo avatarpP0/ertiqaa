@@ -472,7 +472,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a
-                  href={`https://wa.me/966548920100?text=${encodeURIComponent(
+                  href={`https://wa.me/201149556339?text=${encodeURIComponent(
                     `مرحباً د. طارق، قمت بحجز ${confirmedBooking.programTitle} برقم مرجعي: ${confirmedBooking.id}. موعدي هو ${confirmedBooking.date} في ${confirmedBooking.timeSlot}. أرجو تزويدي بالاستبيان التحضيري.`
                   )}`}
                   target="_blank"

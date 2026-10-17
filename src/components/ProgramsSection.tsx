@@ -13,7 +13,6 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
   onSelectProgramDetails
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
-
   const [currency, setCurrency] = useState<'SAR' | 'AED' | 'USD'>('SAR');
 
   const categories = [
@@ -47,32 +46,32 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
       : PROGRAMS.filter((p) => p.category === activeCategory);
 
   return (
-    <section id="programs" className="py-20 lg:py-28 bg-stone-50 border-b border-slate-200">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+    <section id="programs" className="py-24 bg-[#0B0F17] text-white border-b border-white/5 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-12">
-          <span className="text-amber-700 font-bold text-xs tracking-wider uppercase bg-amber-100/70 border border-amber-200 px-3 py-1 rounded-full mb-3">
+          <span className="text-amber-400 font-bold text-xs tracking-wider uppercase bg-amber-500/10 border border-amber-500/30 px-3.5 py-1 rounded-full mb-3">
             البرامج والخدمات الاستشارية
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black text-white leading-tight">
             حلول مصممة لمضاعفة أثرك القيادي وعوائد أعمالك
           </h2>
           <div className="w-16 h-1 bg-amber-500 rounded-full mt-4 mb-4" />
-          <p className="text-slate-600 text-base sm:text-lg">
+          <p className="text-slate-300 text-base sm:text-lg">
             سواء كنت بحاجة لجلسة قرار حاسمة أو مرافقة استشارية مستمرة على مدار أشهر، 
             نقدم مسارات مدروسة تضمن تحقيق نتائج نوعية وملموسة.
           </p>
 
-          {/* Currency Switcher */}
-          <div className="mt-6 flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs text-xs">
-            <span className="text-slate-500 font-bold">العملة المعروضة:</span>
-            <div className="flex items-center gap-1">
+          {/* Luxury Currency Switcher */}
+          <div className="mt-8 flex items-center gap-2 bg-slate-900/90 border border-white/10 px-4 py-2 rounded-2xl shadow-xl text-xs">
+            <span className="text-slate-400 font-bold">العملة المعروضة:</span>
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
                 onClick={() => setCurrency('SAR')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                  currency === 'SAR' ? 'bg-slate-900 text-amber-400' : 'text-slate-600 hover:text-slate-900'
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                  currency === 'SAR' ? 'bg-amber-400 text-slate-950 shadow-md font-black' : 'text-slate-300 hover:text-white'
                 }`}
               >
                 ر.س (SAR)
@@ -80,8 +79,8 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setCurrency('AED')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                  currency === 'AED' ? 'bg-slate-900 text-amber-400' : 'text-slate-600 hover:text-slate-900'
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                  currency === 'AED' ? 'bg-amber-400 text-slate-950 shadow-md font-black' : 'text-slate-300 hover:text-white'
                 }`}
               >
                 د.إ (AED)
@@ -89,8 +88,8 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
               <button
                 type="button"
                 onClick={() => setCurrency('USD')}
-                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
-                  currency === 'USD' ? 'bg-slate-900 text-amber-400' : 'text-slate-600 hover:text-slate-900'
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                  currency === 'USD' ? 'bg-amber-400 text-slate-950 shadow-md font-black' : 'text-slate-300 hover:text-white'
                 }`}
               >
                 $ (USD)
@@ -99,19 +98,19 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
           </div>
         </div>
 
-        {/* Category Tabs (Segmented Control buttons) */}
-        <div className="flex items-center justify-center mb-12 overflow-x-auto pb-2 scrollbar-none">
-          <div className="inline-flex items-center p-1.5 bg-slate-200/70 rounded-xl border border-slate-300/80 gap-1">
+        {/* Category Tabs */}
+        <div className="flex items-center justify-center mb-14 overflow-x-auto pb-2 scrollbar-none">
+          <div className="inline-flex items-center p-1.5 bg-slate-900 border border-white/10 rounded-2xl gap-1">
             {categories.map((cat) => {
               const isActive = activeCategory === cat.id;
               return (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`px-4 py-2 text-xs sm:text-sm font-bold rounded-lg transition-all cursor-pointer whitespace-nowrap ${
+                  className={`px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl transition-all cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'bg-white text-slate-900 shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
+                      ? 'bg-amber-400 text-slate-950 shadow-md font-black'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
                   }`}
                 >
                   {cat.name}
@@ -124,18 +123,19 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
         {/* Programs Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {filteredPrograms.map((program) => {
+            const prices = getConvertedPrice(program);
             return (
               <div
                 key={program.id}
-                className={`rounded-2xl transition-all duration-200 flex flex-col justify-between ${
+                className={`rounded-3xl transition-all duration-300 flex flex-col justify-between ${
                   program.isPopular
-                    ? 'bg-white border-2 border-amber-500/80 shadow-xl relative'
-                    : 'bg-white border border-slate-200 shadow-sm hover:shadow-md'
-                } p-6 sm:p-8`}
+                    ? 'bg-[#0E131F] border-2 border-amber-400/80 shadow-2xl relative'
+                    : 'bg-[#0E131F] border border-white/10 hover:border-amber-400/40 shadow-xl'
+                } p-7 sm:p-9 text-right`}
               >
-                {/* Popular Banner */}
+                {/* Popular Ribbon */}
                 {program.isPopular && (
-                  <div className="absolute -top-3.5 right-6 bg-amber-500 text-slate-950 text-xs font-black px-3.5 py-1 rounded-full shadow-sm flex items-center gap-1.5">
+                  <div className="absolute -top-3.5 right-8 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-xs font-black px-4 py-1 rounded-full shadow-lg flex items-center gap-1.5">
                     <Star className="w-3.5 h-3.5 fill-slate-950" />
                     <span>البرنامج الأكثر طلباً للمبتدئين</span>
                   </div>
@@ -143,59 +143,59 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
 
                 <div>
                   {/* Clean unboxed metadata header */}
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 mb-3 pt-1">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-amber-600" />
-                      <span>{program.duration}</span>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400 mb-4 pt-1">
+                    <span className="flex items-center gap-1.5">
+                      <Clock className="w-3.5 h-3.5 text-amber-400" />
+                      <span className="text-slate-300">{program.duration}</span>
                     </span>
-                    <span aria-hidden="true">·</span>
-                    <span className="flex items-center gap-1">
+                    <span aria-hidden="true" className="text-slate-600">·</span>
+                    <span className="flex items-center gap-1.5">
                       <Monitor className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{program.format}</span>
+                      <span className="text-slate-300">{program.format}</span>
                     </span>
                     {program.badge && (
                       <>
-                        <span aria-hidden="true">·</span>
-                        <span className="text-amber-700 font-semibold">{program.badge}</span>
+                        <span aria-hidden="true" className="text-slate-600">·</span>
+                        <span className="text-amber-400 font-semibold">{program.badge}</span>
                       </>
                     )}
                   </div>
 
                   {/* Title & Subtitle */}
-                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 mb-2">
+                  <h3 className="text-2xl font-black text-white mb-2">
                     {program.title}
                   </h3>
-                  <p className="text-slate-600 text-xs sm:text-sm font-medium mb-4 leading-relaxed">
+                  <p className="text-slate-300 text-xs sm:text-sm font-medium mb-5 leading-relaxed">
                     {program.subtitle}
                   </p>
 
                   {/* Target Audience Box */}
-                  <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 mb-5 text-xs text-slate-700">
-                    <span className="font-bold text-slate-900 block mb-1">
+                  <div className="bg-slate-900/80 border border-white/5 rounded-2xl p-4 mb-6 text-xs text-slate-300">
+                    <span className="font-bold text-amber-300 block mb-1">
                       الفئة المستهدفة:
                     </span>
-                    <p className="leading-relaxed text-slate-600">
+                    <p className="leading-relaxed text-slate-400">
                       {program.targetAudience}
                     </p>
                   </div>
 
                   {/* Summary */}
-                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
+                  <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-6 font-normal">
                     {program.summary}
                   </p>
 
                   {/* Features Deliverables List */}
-                  <div className="border-t border-slate-100 pt-5 mb-6">
-                    <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block mb-3">
+                  <div className="border-t border-white/10 pt-6 mb-6">
+                    <span className="text-xs font-bold text-amber-400 uppercase tracking-wider block mb-3.5">
                       أبرز المخرجات والمميزات المشمولة:
                     </span>
-                    <ul className="space-y-2.5 text-xs sm:text-sm text-slate-700">
+                    <ul className="space-y-3 text-xs sm:text-sm text-slate-200">
                       {program.features.map((feat, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5">
-                          <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 mt-0.5">
-                            <Check className="w-3 h-3 stroke-[2.5]" />
+                        <li key={idx} className="flex items-start gap-3">
+                          <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                            <Check className="w-3 h-3 stroke-[3]" />
                           </div>
-                          <span className="leading-snug">{feat}</span>
+                          <span className="leading-snug text-slate-300">{feat}</span>
                         </li>
                       ))}
                     </ul>
@@ -203,35 +203,28 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                 </div>
 
                 {/* Footer Pricing & CTA Area */}
-                <div className="border-t border-slate-200 pt-6 mt-2">
+                <div className="border-t border-white/10 pt-6 mt-2">
                   <div className="flex items-baseline justify-between mb-5">
                     <div>
-                      <span className="text-xs text-slate-500 block mb-0.5">
+                      <span className="text-xs text-slate-400 block mb-1">
                         الاستثمار المطلوب:
                       </span>
-                      <div className="flex items-baseline gap-2">
-                        {(() => {
-                          const prices = getConvertedPrice(program);
-                          return (
-                            <>
-                              <span className="text-2xl sm:text-3xl font-extrabold text-slate-950 font-mono">
-                                {prices.current}
-                              </span>
-                              {prices.original && (
-                                <span className="text-xs sm:text-sm text-slate-400 line-through font-mono">
-                                  {prices.original}
-                                </span>
-                              )}
-                            </>
-                          );
-                        })()}
+                      <div className="flex items-baseline gap-2.5">
+                        <span className="text-3xl font-black text-amber-400 font-mono">
+                          {prices.current}
+                        </span>
+                        {prices.original && (
+                          <span className="text-sm text-slate-500 line-through font-mono">
+                            {prices.original}
+                          </span>
+                        )}
                       </div>
                     </div>
 
                     {program.syllabus && (
                       <button
                         onClick={() => onSelectProgramDetails(program)}
-                        className="text-xs text-amber-700 hover:text-amber-800 font-bold underline underline-offset-4 flex items-center gap-1 cursor-pointer"
+                        className="text-xs text-amber-400 hover:text-amber-300 font-bold underline underline-offset-4 flex items-center gap-1 cursor-pointer"
                       >
                         <Info className="w-3.5 h-3.5" />
                         <span>عرض المنهاج والجدول</span>
@@ -239,27 +232,27 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                     )}
                   </div>
 
-                  {/* Dual Action Buttons */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {/* Action Buttons */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <button
                       onClick={() => onOpenBooking(program.id)}
-                      className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer group"
+                      className="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
                     >
-                      <Calendar className="w-4 h-4 text-amber-400" />
+                      <Calendar className="w-4 h-4 text-slate-950" />
                       <span>حجز هذا البرنامج</span>
                     </button>
 
                     {program.syllabus ? (
                       <button
                         onClick={() => onSelectProgramDetails(program)}
-                        className="w-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-semibold py-3 px-4 rounded-xl transition-all text-xs sm:text-sm cursor-pointer"
+                        className="w-full bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-bold py-3.5 px-4 rounded-xl transition-all text-xs sm:text-sm cursor-pointer"
                       >
                         <span>تفاصيل الخطة الزمنية</span>
                       </button>
                     ) : (
                       <a
                         href="#contact"
-                        className="w-full bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-semibold py-3 px-4 rounded-xl transition-all text-xs sm:text-sm text-center flex items-center justify-center"
+                        className="w-full bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-bold py-3.5 px-4 rounded-xl transition-all text-xs sm:text-sm text-center flex items-center justify-center"
                       >
                         <span>طلب تفصيل خاص</span>
                       </a>
@@ -272,19 +265,19 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
           })}
         </div>
 
-        {/* Custom enterprise note */}
-        <div className="mt-12 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center md:text-right">
-            <h4 className="text-base font-bold text-slate-900">
-              هل تمثل شركة أو جهة حكومية تبحث عن برنامج مخصص بالكامل؟
+        {/* Corporate custom banner */}
+        <div className="mt-14 bg-gradient-to-r from-slate-900 to-[#0E131F] border border-amber-500/30 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-right">
+          <div className="space-y-1.5">
+            <h4 className="text-lg font-black text-white">
+              هل تمثل شركة أو جهة حكومية تبحث عن برنامج تدريبي مخصص بالكامل؟
             </h4>
-            <p className="text-xs sm:text-sm text-slate-600">
+            <p className="text-xs sm:text-sm text-slate-300">
               نصمم ورش عمل استراتيجية ومخيمات تدريبية للقيادات التنفيذية ومجالس الإدارة مع خطط متابعة سنوية.
             </p>
           </div>
           <a
             href="#contact"
-            className="shrink-0 bg-stone-100 hover:bg-stone-200 text-slate-900 font-bold px-5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm transition-colors"
+            className="shrink-0 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-6 py-3 rounded-xl shadow-md text-xs sm:text-sm transition-colors whitespace-nowrap"
           >
             طلب عرض فني ومالي مخصص
           </a>

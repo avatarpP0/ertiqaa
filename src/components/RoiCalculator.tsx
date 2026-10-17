@@ -33,20 +33,20 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
   };
 
   return (
-    <section id="roi-calculator" className="py-20 bg-slate-900 text-white relative overflow-hidden border-b border-slate-800">
+    <section id="roi-calculator" className="py-24 bg-[#0B0F17] text-white relative overflow-hidden border-b border-white/5">
       {/* Background radial gradients */}
-      <div className="absolute top-0 left-1/3 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/3 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 right-10 w-96 h-96 bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
         
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-amber-400 text-xs font-semibold mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-3">
             <Calculator className="w-3.5 h-3.5" />
             <span>حاسبة الأثر والجدوى الاستثمارية</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black text-white leading-tight">
             احسب العائد المالي والزمني المتوقع على استشارتك
           </h2>
           <div className="w-16 h-1 bg-amber-500 rounded-full mx-auto mt-4 mb-4" />
@@ -56,7 +56,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
         </div>
 
         {/* Interactive Calculator Body */}
-        <div className="bg-slate-800/80 border border-slate-700 rounded-2xl p-6 sm:p-10 shadow-2xl backdrop-blur-sm grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="bg-[#0E131F] border border-white/10 rounded-3xl p-7 sm:p-10 shadow-2xl backdrop-blur-md grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           {/* Controls Column (7 cols) */}
           <div className="lg:col-span-7 space-y-6 text-right">

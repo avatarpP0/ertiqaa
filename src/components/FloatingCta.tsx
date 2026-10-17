@@ -27,11 +27,13 @@ export const FloatingCta: React.FC<FloatingCtaProps> = ({ onOpenBooking }) => {
         href={COACH_INFO.contact.whatsapp}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-12 h-12 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center shadow-xl hover:scale-105 transition-all shrink-0 border border-emerald-400/40"
-        aria-label="تواصل عبر واتساب"
-        title="تواصل مباشر عبر واتساب"
+        className="h-12 px-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center gap-1.5 shadow-2xl hover:scale-105 transition-all shrink-0 border border-emerald-400/40 text-xs font-mono font-bold"
+        dir="ltr"
+        aria-label="تواصل عبر واتساب 01149556339"
+        title="تواصل مباشر عبر واتساب 01149556339"
       >
-        <MessageCircle className="w-6 h-6" />
+        <MessageCircle className="w-5 h-5" />
+        <span className="hidden sm:inline">01149556339</span>
       </a>
 
       {/* Book Session Trigger Button */}

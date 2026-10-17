@@ -28,9 +28,9 @@ export const COACH_INFO = {
   ],
   contact: {
     email: 'contact@tarek-almansoor.com',
-    phone: '+966 54 892 0100',
-    location: 'الرياض، المملكة العربية السعودية / دبي، الإمارات',
-    whatsapp: 'https://wa.me/966548920100?text=مرحباً%20دكتور%20طارق،%20أود%20الاستفسار%20عن%20حجز%20جلسة%20استشارية',
+    phone: '01149556339',
+    location: 'الرياض / القاهرة / دبي (متاح أونلاين عالمياً)',
+    whatsapp: 'https://wa.me/201149556339?text=مرحباً،%20أود%20الاستفسار%20عن%20حجز%20جلسة%20استشارية',
     social: {
       linkedin: 'https://linkedin.com',
       twitter: 'https://twitter.com',
