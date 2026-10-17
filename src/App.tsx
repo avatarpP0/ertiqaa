@@ -5,6 +5,8 @@ import { AboutCoach } from './components/AboutCoach';
 import { ProgramMatcherQuiz } from './components/ProgramMatcherQuiz';
 import { ProgramsSection } from './components/ProgramsSection';
 import { RoiCalculator } from './components/RoiCalculator';
+import { LeadershipDiagnostic } from './components/LeadershipDiagnostic';
+import { VideoInsights } from './components/VideoInsights';
 import { ProcessSteps } from './components/ProcessSteps';
 import { ValueProps } from './components/ValueProps';
 import { TestimonialsSection } from './components/TestimonialsSection';
@@ -72,19 +74,25 @@ export default function App() {
         {/* 5. Interactive ROI & Value Calculator */}
         <RoiCalculator onOpenBooking={() => handleOpenBooking()} />
 
-        {/* 6. Process & How It Works */}
+        {/* 6. Interactive Leadership Diagnostic Assessment */}
+        <LeadershipDiagnostic />
+
+        {/* 7. Executive Video & Audio Insights Reel */}
+        <VideoInsights onOpenBooking={() => handleOpenBooking()} />
+
+        {/* 8. Process & How It Works */}
         <ProcessSteps onOpenBooking={() => handleOpenBooking()} />
 
-        {/* 7. Transformation & Value Propositions */}
+        {/* 9. Transformation & Value Propositions */}
         <ValueProps />
 
-        {/* 8. Client Testimonials & Case Studies */}
+        {/* 10. Client Testimonials & Case Studies */}
         <TestimonialsSection />
 
-        {/* 9. Frequently Asked Questions */}
+        {/* 11. Frequently Asked Questions */}
         <FaqSection />
 
-        {/* 10. Contact & Inquiries */}
+        {/* 12. Contact & Inquiries */}
         <ContactSection onOpenBooking={() => handleOpenBooking()} />
       </main>
 

@@ -23,6 +23,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenGuide }) =>
     { name: 'عن المدرب', href: '#about' },
     { name: 'البرامج والخدمات', href: '#programs' },
     { name: 'حاسبة العائد', href: '#roi-calculator' },
+    { name: 'فحص القيادة', href: '#diagnostic' },
+    { name: 'مقتطفات مرئية', href: '#insights' },
     { name: 'تجارب العملاء', href: '#testimonials' },
     { name: 'الأسئلة الشائعة', href: '#faq' },
     { name: 'تواصل معنا', href: '#contact' },

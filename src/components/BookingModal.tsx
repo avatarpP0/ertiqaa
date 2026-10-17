@@ -386,6 +386,20 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 />
               </div>
 
+              {/* Payment Methods Notice */}
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-600 space-y-1.5">
+                <div className="flex items-center justify-between font-bold text-slate-800">
+                  <span>طرق السداد المتاحة:</span>
+                  <span className="text-emerald-700 font-semibold text-[11px]">لا يُطلب الدفع إلا بعد تأكيد الموعد</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">مدى Mada</span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">Apple Pay</span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">فيزا / ماستركارد</span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">تحويل بنكي رسمي مع فاتورة ضريبية</span>
+                </div>
+              </div>
+
               <div className="pt-2 flex items-center justify-between border-t border-slate-100">
                 <button
                   type="button"
