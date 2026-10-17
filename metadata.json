@@ -1,0 +1,6 @@
+{
+  "name": "ارتقاء | استشارات وتدريب القيادات ورواد الأعمال",
+  "description": "منصة تدريب واستشارات أونلاين متكاملة لحجز الجلسات الاستراتيجية وبرامج التطوير القيادي وتنمية الأعمال مع د. طارق المنصور.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "ارتقاء | استشارات وتدريب القيادات ورواد الأعمال",
+  "short_name": "ارتقاء",
+  "description": "منصة تدريب واستشارات أونلاين متكاملة لحجز الجلسات الاستراتيجية وبرامج التطوير القيادي وتنمية الأعمال مع د. طارق المنصور.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#0f172a",
+  "dir": "rtl",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
