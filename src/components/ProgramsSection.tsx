@@ -14,6 +14,8 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
 }) => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
+  const [currency, setCurrency] = useState<'SAR' | 'AED' | 'USD'>('SAR');
+
   const categories = [
     { id: 'all', name: 'جميع البرامج والخدمات' },
     { id: 'individual', name: 'استشارات فردية 1-on-1' },
@@ -21,6 +23,23 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
     { id: 'growth', name: 'تسريع نمو المشاريع' },
     { id: 'corporate', name: 'استشارات وورش الشركات' },
   ];
+
+  const getConvertedPrice = (prog: Program) => {
+    if (prog.price.includes('مخصص')) {
+      return { current: prog.price, original: undefined };
+    }
+    if (currency === 'AED') {
+      if (prog.id === 'strategy-session') return { current: '930 د.إ', original: '1,370 د.إ' };
+      if (prog.id === 'executive-mastery') return { current: '9,600 د.إ', original: '13,200 د.إ' };
+      if (prog.id === 'startup-scale') return { current: '3,380 د.إ', original: '4,800 د.إ' };
+    }
+    if (currency === 'USD') {
+      if (prog.id === 'strategy-session') return { current: '$255 USD', original: '$375 USD' };
+      if (prog.id === 'executive-mastery') return { current: '$2,600 USD', original: '$3,600 USD' };
+      if (prog.id === 'startup-scale') return { current: '$920 USD', original: '$1,300 USD' };
+    }
+    return { current: prog.price, original: prog.originalPrice };
+  };
 
   const filteredPrograms =
     activeCategory === 'all'
@@ -44,6 +63,40 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
             سواء كنت بحاجة لجلسة قرار حاسمة أو مرافقة استشارية مستمرة على مدار أشهر، 
             نقدم مسارات مدروسة تضمن تحقيق نتائج نوعية وملموسة.
           </p>
+
+          {/* Currency Switcher */}
+          <div className="mt-6 flex items-center gap-2 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs text-xs">
+            <span className="text-slate-500 font-bold">العملة المعروضة:</span>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setCurrency('SAR')}
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                  currency === 'SAR' ? 'bg-slate-900 text-amber-400' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                ر.س (SAR)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrency('AED')}
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                  currency === 'AED' ? 'bg-slate-900 text-amber-400' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                د.إ (AED)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrency('USD')}
+                className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+                  currency === 'USD' ? 'bg-slate-900 text-amber-400' : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                $ (USD)
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Category Tabs (Segmented Control buttons) */}
@@ -157,14 +210,21 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                         الاستثمار المطلوب:
                       </span>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-2xl sm:text-3xl font-extrabold text-slate-950 font-mono">
-                          {program.price}
-                        </span>
-                        {program.originalPrice && (
-                          <span className="text-xs sm:text-sm text-slate-400 line-through font-mono">
-                            {program.originalPrice}
-                          </span>
-                        )}
+                        {(() => {
+                          const prices = getConvertedPrice(program);
+                          return (
+                            <>
+                              <span className="text-2xl sm:text-3xl font-extrabold text-slate-950 font-mono">
+                                {prices.current}
+                              </span>
+                              {prices.original && (
+                                <span className="text-xs sm:text-sm text-slate-400 line-through font-mono">
+                                  {prices.original}
+                                </span>
+                              )}
+                            </>
+                          );
+                        })()}
                       </div>
                     </div>
 

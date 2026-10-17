@@ -62,3 +62,6 @@ export interface QuizQuestion {
     recommendedProgramId: string;
   }[];
 }
+
+export type Currency = 'SAR' | 'AED' | 'USD';
+

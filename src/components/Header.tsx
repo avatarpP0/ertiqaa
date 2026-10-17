@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Calendar, Phone, Sparkles, ShieldCheck } from 'lucide-react';
+import { Menu, X, Calendar, Phone, Sparkles, ShieldCheck, BookOpen } from 'lucide-react';
 import { COACH_INFO } from '../data/mockData';
 
 interface HeaderProps {
   onOpenBooking: (programId?: string) => void;
+  onOpenGuide: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenBooking }) => {
+export const Header: React.FC<HeaderProps> = ({ onOpenBooking, onOpenGuide }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -21,6 +22,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking }) => {
   const navLinks = [
     { name: 'عن المدرب', href: '#about' },
     { name: 'البرامج التدريبية', href: '#programs' },
+    { name: 'حاسبة العائد', href: '#roi-calculator' },
     { name: 'منهجية العمل', href: '#process' },
     { name: 'النتائج والمميزات', href: '#features' },
     { name: 'آراء العملاء', href: '#testimonials' },
@@ -114,8 +116,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenBooking }) => {
           {/* Desktop Action Buttons */}
           <div className="hidden sm:flex items-center gap-3">
             <button
+              onClick={onOpenGuide}
+              className="hidden xl:flex items-center gap-1.5 text-xs text-amber-900 bg-amber-50 hover:bg-amber-100/80 border border-amber-200/80 px-3 py-2.5 rounded-xl font-bold transition-all cursor-pointer"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-amber-700" />
+              <span>دليل القرارات (مجاني)</span>
+            </button>
+
+            <button
               onClick={() => onOpenBooking()}
-              className="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2 group active:scale-95"
+              className="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-sm hover:shadow transition-all flex items-center gap-2 group active:scale-95 cursor-pointer"
             >
               <Calendar className="w-4 h-4 text-amber-400 group-hover:rotate-12 transition-transform" />
               <span>احجز جلستك الآن</span>
