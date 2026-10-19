@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 import { ChevronDown, Search, HelpCircle, MessageSquare } from 'lucide-react';
-import { FAQS } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
+import { getFaqs } from '../data/mockData';
 
 export const FaqSection: React.FC = () => {
+  const { language, isRtl, t } = useLanguage();
+  const faqs = getFaqs(language);
+
   const [openId, setOpenId] = useState<string | null>('f1');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  const categories = [
+  const categories = language === 'en' ? [
+    { id: 'all', label: 'All Questions' },
+    { id: 'general', label: 'Advisory & Tracks' },
+    { id: 'booking', label: 'Booking & Delivery' },
+    { id: 'guarantee', label: 'Guarantee & Refunds' },
+    { id: 'corporate', label: 'Corporate & Invoicing' },
+  ] : [
     { id: 'all', label: 'جميع الأسئلة' },
     { id: 'general', label: 'الاستشارة والبرامج' },
     { id: 'booking', label: 'المواعيد والتنفيذ' },
@@ -15,7 +25,7 @@ export const FaqSection: React.FC = () => {
     { id: 'corporate', label: 'الشركات والفواتير' },
   ];
 
-  const filteredFaqs = FAQS.filter((faq) => {
+  const filteredFaqs = faqs.filter((faq) => {
     const matchesCategory =
       selectedCategory === 'all' || faq.category === selectedCategory;
     const matchesSearch =
@@ -35,14 +45,14 @@ export const FaqSection: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col items-center text-center max-w-2xl mx-auto mb-12">
           <span className="text-amber-400 font-bold text-xs tracking-wider uppercase bg-amber-500/10 border border-amber-500/30 px-3.5 py-1 rounded-full mb-3">
-            إجابات واضحة ومباشرة
+            {t.faqKicker}
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black text-white leading-tight">
-            الأسئلة الأكثر شيوعاً
+            {t.faqTitle}
           </h2>
           <div className="w-16 h-1 bg-amber-500 rounded-full mt-4 mb-4" />
           <p className="text-slate-300 text-sm sm:text-base">
-            كل ما تود معرفته عن آلية حجز الجلسات، الضمان المالي، وطريقة تنفيذ البرامج التدريبية.
+            {t.faqSubtitle}
           </p>
         </div>
 
@@ -50,13 +60,15 @@ export const FaqSection: React.FC = () => {
         <div className="mb-8 space-y-4">
           {/* Search Input */}
           <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2" />
+            <Search className={`w-4 h-4 text-slate-400 absolute top-1/2 -translate-y-1/2 ${isRtl ? 'right-4' : 'left-4'}`} />
             <input
               type="text"
-              placeholder="ابحث عن سؤالك هنا (مثلاً: ضمان، موعد، شركات، زووم)..."
+              placeholder={t.faqSearchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0E131F] border border-white/10 rounded-2xl py-3.5 pr-11 pl-4 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all shadow-xl"
+              className={`w-full bg-[#0E131F] border border-white/10 rounded-2xl py-3.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 transition-all shadow-xl ${
+                isRtl ? 'pr-11 pl-4 text-right' : 'pl-11 pr-4 text-left'
+              }`}
             />
           </div>
 
@@ -94,7 +106,7 @@ export const FaqSection: React.FC = () => {
                 >
                   <button
                     onClick={() => toggleFaq(faq.id)}
-                    className="w-full text-right p-6 flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
+                    className={`w-full p-6 flex items-center justify-between gap-4 cursor-pointer focus:outline-none ${isRtl ? 'text-right' : 'text-left'}`}
                   >
                     <span className="text-sm sm:text-base font-bold text-white leading-snug">
                       {faq.question}
@@ -111,7 +123,7 @@ export const FaqSection: React.FC = () => {
                   </button>
 
                   {isOpen && (
-                    <div className="px-6 pb-6 pt-1 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-white/5 animate-in fade-in duration-200 font-normal">
+                    <div className={`px-6 pb-6 pt-1 text-slate-300 text-xs sm:text-sm leading-relaxed border-t border-white/5 animate-in fade-in duration-200 font-normal ${isRtl ? 'text-right' : 'text-left'}`}>
                       {faq.answer}
                     </div>
                   )}
@@ -121,30 +133,30 @@ export const FaqSection: React.FC = () => {
           ) : (
             <div className="text-center py-12 bg-[#0E131F] rounded-2xl border border-white/10 p-6">
               <HelpCircle className="w-8 h-8 text-slate-500 mx-auto mb-2" />
-              <p className="text-sm font-bold text-slate-300">لم يتم العثور على سؤال يطابق بحثك</p>
+              <p className="text-sm font-bold text-slate-300">{t.faqNotFound}</p>
               <p className="text-xs text-slate-500 mt-1">
-                تواصل معنا مباشرة وسنجيبك في الحال.
+                {t.faqContactDirect}
               </p>
             </div>
           )}
         </div>
 
         {/* Custom inquiry CTA */}
-        <div className="mt-12 p-6 rounded-3xl bg-[#0E131F] border border-amber-500/30 text-white flex flex-col sm:flex-row items-center justify-between gap-4 text-right">
+        <div className={`mt-12 p-6 rounded-3xl bg-[#0E131F] border border-amber-500/30 text-white flex flex-col sm:flex-row items-center justify-between gap-4 ${isRtl ? 'text-right' : 'text-left'}`}>
           <div className="flex items-center gap-3.5">
             <div className="w-11 h-11 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center shrink-0 border border-amber-500/20">
               <MessageSquare className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm sm:text-base font-black text-white">لديك سؤال آخر لم تجد إجابته هنا؟</h4>
-              <p className="text-xs text-slate-400 mt-0.5">فريق الدعم الاستشاري متاح للإجابة على جميع استفساراتك.</p>
+              <h4 className="text-sm sm:text-base font-black text-white">{t.faqHaveMoreQuestions}</h4>
+              <p className="text-xs text-slate-400 mt-0.5">{t.faqSupportAvailable}</p>
             </div>
           </div>
           <a
             href="#contact"
             className="text-xs sm:text-sm font-black text-slate-950 bg-amber-400 hover:bg-amber-300 px-5 py-3 rounded-xl transition-colors whitespace-nowrap shadow-md"
           >
-            تواصل مع المستشار
+            {t.faqBtnContactCoach}
           </a>
         </div>
 

@@ -1,71 +1,15 @@
 import React, { useState } from 'react';
-import { Play, Sparkles, Clock, Eye, CheckCircle2, X, ArrowLeft, Video, Volume2 } from 'lucide-react';
-
-interface VideoInsight {
-  id: string;
-  title: string;
-  description: string;
-  duration: string;
-  platform: string;
-  views: string;
-  thumbnail: string;
-  videoUrl: string;
-  keyTakeaways: string[];
-}
-
-const INSIGHTS: VideoInsight[] = [
-  {
-    id: 'decision-making',
-    title: 'كيف تتخذ قراراً استثمارياً حاسماً وتتجاوز الشلل التحليلي؟',
-    description: 'شرح عملي لمصفوفة صناعة القرارات تحت الضغط وكيف يوازن الرؤساء التنفيذيون بين المخاطرة وحجم الفرصة.',
-    duration: '4:20 دقيقة',
-    platform: 'بودكاست فنجان',
-    views: '142 ألف مشاهدة',
-    thumbnail: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://www.youtube.com',
-    keyTakeaways: [
-      'قاعدة الـ 70% من البيانات الكافية للتحرك',
-      'فصل القرارات غير القابلة للرجوع (Type 1) عن المرنة (Type 2)',
-      'وضع خطة احتواء فورية للسيناريو الأسوأ'
-    ]
-  },
-  {
-    id: 'pricing-mastery',
-    title: 'الخطأ القاتل في تسعير المنتجات الذي يلتهم 40% من أرباحك',
-    description: 'تحليل دقيق لأكبر فخ يقع فيه رواد الأعمال عند ربط السعر بالتكلفة المباشرة بدلاً من القيمة المدركة لدى العميل.',
-    duration: '6:15 دقيقة',
-    platform: 'ملتقى رواد الأعمال',
-    views: '98 ألف مشاهدة',
-    thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://www.youtube.com',
-    keyTakeaways: [
-      'الانتقال من تسعير التكلفة (Cost-Plus) إلى تسعير القيمة (Value-Based)',
-      'هندسة باقات الخدمات لتحفيز اختيار الخيار الأعلى ربحية',
-      'كيف ترفع أسعارك بنسبة 25% دون خسارة العملاء الأوفياء'
-    ]
-  },
-  {
-    id: 'team-delegation',
-    title: 'قاعدة الـ 20 دقيقة لتفويض المهام وبناء فريق ينجز في غيابك',
-    description: 'كيف يتحول القائد من دور "رجل الإطفاء" الذي يحل المشكلات اليومية إلى المخطط الاستراتيجي المستريح.',
-    duration: '5:45 دقيقة',
-    platform: 'قمة القيادة الخليجية',
-    views: '115 ألف مشاهدة',
-    thumbnail: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800',
-    videoUrl: 'https://www.youtube.com',
-    keyTakeaways: [
-      'تحديد المهام التي يجب تفويضها فوراً عبر مصفوفة الوقت',
-      'إعطاء الصلاحيات بدلاً من إعطاء التعليمات الحرفية',
-      'بناء نظام إشعار بالنتائج بدلاً من الرقابة الخانقة'
-    ]
-  }
-];
+import { Play, Clock, Eye, CheckCircle2, X, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { getVideoInsights, VideoInsight } from '../data/mockData';
 
 interface VideoInsightsProps {
   onOpenBooking: () => void;
 }
 
 export const VideoInsights: React.FC<VideoInsightsProps> = ({ onOpenBooking }) => {
+  const { language, isRtl, t } = useLanguage();
+  const insights = getVideoInsights(language);
   const [selectedVideo, setSelectedVideo] = useState<VideoInsight | null>(null);
 
   return (
@@ -73,25 +17,25 @@ export const VideoInsights: React.FC<VideoInsightsProps> = ({ onOpenBooking }) =
       {/* Background Ambience */}
       <div className="absolute top-1/3 right-10 w-96 h-96 bg-amber-500/5 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 text-right">
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 relative z-10 ${isRtl ? 'text-right' : 'text-left'}`}>
         
         {/* Section Header */}
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16">
           <span className="text-amber-400 font-bold text-xs tracking-wider uppercase bg-amber-500/10 border border-amber-500/30 px-3.5 py-1 rounded-full mb-3">
-            محتوى فكري واستشاري
+            {t.insightsKicker}
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black text-white leading-tight">
-            شاهد واستمع لمقتطفات من الجلسات والندوات
+            {t.insightsTitle}
           </h2>
           <div className="w-16 h-1 bg-amber-500 rounded-full mt-4 mb-4" />
           <p className="text-slate-300 text-base sm:text-lg">
-            إضاءات عملية وسريعة تلخص أهم المفاهيم القيادية والاستراتيجية التي نناقشها داخل الجلسات الاستشارية.
+            {t.insightsSubtitle}
           </p>
         </div>
 
         {/* Video Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {INSIGHTS.map((video) => (
+          {insights.map((video) => (
             <div
               key={video.id}
               className="bg-[#0B0F17] border border-white/10 rounded-3xl overflow-hidden hover:border-amber-400/40 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group"
@@ -150,8 +94,8 @@ export const VideoInsights: React.FC<VideoInsightsProps> = ({ onOpenBooking }) =
                   onClick={() => setSelectedVideo(video)}
                   className="text-xs font-bold text-amber-400 hover:text-amber-300 flex items-center gap-1.5 cursor-pointer"
                 >
-                  <span>مشاهدة المقتطف وأهم النقاط</span>
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>{t.insightsWatchTakeaways}</span>
+                  {isRtl ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
                 </button>
               </div>
             </div>
@@ -165,7 +109,7 @@ export const VideoInsights: React.FC<VideoInsightsProps> = ({ onOpenBooking }) =
             onClick={() => setSelectedVideo(null)}
           >
             <div 
-              className="bg-[#0E131F] rounded-3xl max-w-2xl w-full border border-amber-500/30 shadow-2xl overflow-hidden relative text-right"
+              className={`bg-[#0E131F] rounded-3xl max-w-2xl w-full border border-amber-500/30 shadow-2xl overflow-hidden relative ${isRtl ? 'text-right' : 'text-left'}`}
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Top Bar */}
@@ -200,7 +144,7 @@ export const VideoInsights: React.FC<VideoInsightsProps> = ({ onOpenBooking }) =
                     <Play className="w-7 h-7 fill-slate-950 mr-0.5" />
                   </div>
                   <span className="text-xs font-bold text-white bg-slate-900/90 border border-white/10 px-3 py-1 rounded-full backdrop-blur-md">
-                    مقتطف استشاري مرئي مباشر
+                    {language === 'en' ? 'Direct Advisory Media Excerpt' : 'مقتطف استشاري مرئي مباشر'}
                   </span>
                 </div>
               </div>
@@ -208,7 +152,7 @@ export const VideoInsights: React.FC<VideoInsightsProps> = ({ onOpenBooking }) =
               {/* Key Takeaways */}
               <div className="p-6 space-y-4">
                 <h5 className="text-sm font-bold text-amber-300">
-                  الخلاصات التنفيذية المستفادة من هذا المقتطف:
+                  {t.insightsTakeawaysHeader}
                 </h5>
                 <div className="space-y-2.5">
                   {selectedVideo.keyTakeaways.map((point, idx) => (
@@ -222,7 +166,7 @@ export const VideoInsights: React.FC<VideoInsightsProps> = ({ onOpenBooking }) =
                 {/* Modal CTA */}
                 <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
                   <span className="text-xs text-slate-400">
-                    تريد مناقشة هذا التحدي في واقع شركتك؟
+                    {t.insightsDiscussProblem}
                   </span>
                   <button
                     onClick={() => {
@@ -231,7 +175,7 @@ export const VideoInsights: React.FC<VideoInsightsProps> = ({ onOpenBooking }) =
                     }}
                     className="w-full sm:w-auto bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black px-6 py-2.5 rounded-xl text-xs sm:text-sm shadow-md transition-all cursor-pointer"
                   >
-                    حجز جلسة استشارية خاصة
+                    {t.insightsBtnBookPrivate}
                   </button>
                 </div>
               </div>

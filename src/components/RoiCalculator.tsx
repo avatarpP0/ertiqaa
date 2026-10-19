@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { Calculator, TrendingUp, Clock, DollarSign, ArrowLeft, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Calculator, ArrowLeft, ArrowRight } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface RoiCalculatorProps {
   onOpenBooking: () => void;
 }
 
 export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) => {
-  // Annual Revenue in SAR
+  const { language, isRtl, t } = useLanguage();
+
+  // Annual Revenue
   const [annualRevenue, setAnnualRevenue] = useState<number>(1500000);
   // Team size
   const [teamSize, setTeamSize] = useState<number>(12);
@@ -29,6 +32,9 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
   const roiMultiplier = Math.max(2, Math.round(estimatedAnnualGrowth / estimatedInvestment));
 
   const formatCurrency = (val: number) => {
+    if (language === 'en') {
+      return '$' + new Intl.NumberFormat('en-US').format(Math.round(val / 3.75)) + ' USD';
+    }
     return new Intl.NumberFormat('ar-SA').format(val) + ' ر.س';
   };
 
@@ -44,14 +50,14 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
         <div className="text-center max-w-2xl mx-auto mb-14">
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-3">
             <Calculator className="w-3.5 h-3.5" />
-            <span>حاسبة الأثر والجدوى الاستثمارية</span>
+            <span>{t.roiKicker}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black text-white leading-tight">
-            احسب العائد المالي والزمني المتوقع على استشارتك
+            {t.roiTitle}
           </h2>
           <div className="w-16 h-1 bg-amber-500 rounded-full mx-auto mt-4 mb-4" />
           <p className="text-slate-300 text-sm sm:text-base">
-            الاستشارة التنفيذية ليست تكلفة، بل استثمار يعود بأضعاف قيمته في تنظيم العمليات وتفادي الأخطاء المكلفة.
+            {t.roiSubtitle}
           </p>
         </div>
 
@@ -59,13 +65,13 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
         <div className="bg-[#0E131F] border border-white/10 rounded-3xl p-7 sm:p-10 shadow-2xl backdrop-blur-md grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           {/* Controls Column (7 cols) */}
-          <div className="lg:col-span-7 space-y-6 text-right">
+          <div className={`lg:col-span-7 space-y-6 ${isRtl ? 'text-right' : 'text-left'}`}>
             
             {/* Control 1: Revenue Slider */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs sm:text-sm font-bold text-slate-200">
-                  حجم إيراداتك السنوية الحالية التقريبية:
+                  {t.roiRevenueLabel}
                 </span>
                 <span className="font-mono text-amber-400 font-extrabold text-base sm:text-lg">
                   {formatCurrency(annualRevenue)}
@@ -81,8 +87,8 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
                 className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
               />
               <div className="flex justify-between text-[11px] text-slate-400 mt-1 font-mono">
-                <span>300 ألف ر.س</span>
-                <span>15 مليون ر.س+</span>
+                <span>{language === 'en' ? '$80k USD' : '300 ألف ر.س'}</span>
+                <span>{language === 'en' ? '$4M+ USD' : '15 مليون ر.س+'}</span>
               </div>
             </div>
 
@@ -90,10 +96,10 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs sm:text-sm font-bold text-slate-200">
-                  حجم فريق العمل أو المنظمة:
+                  {t.roiTeamSizeLabel}
                 </span>
                 <span className="font-mono text-amber-400 font-extrabold text-base sm:text-lg">
-                  {teamSize} فرد
+                  {teamSize} {t.roiTeamMember}
                 </span>
               </div>
               <input
@@ -106,15 +112,15 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
                 className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-500"
               />
               <div className="flex justify-between text-[11px] text-slate-400 mt-1 font-mono">
-                <span>فريق صغير (2)</span>
-                <span>شركة متوسطة (80+)</span>
+                <span>{language === 'en' ? 'Small Team (2)' : 'فريق صغير (2)'}</span>
+                <span>{language === 'en' ? 'Enterprise (80+)' : 'شركة متوسطة (80+)'}</span>
               </div>
             </div>
 
             {/* Control 3: Focus Area */}
             <div>
               <span className="block text-xs sm:text-sm font-bold text-slate-200 mb-2.5">
-                المجال ذو الأولوية القصوى لديك الآن:
+                {t.roiFocusAreaLabel}
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <button
@@ -126,7 +132,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
                       : 'bg-slate-900/60 border-slate-700 text-slate-300 hover:border-slate-600'
                   }`}
                 >
-                  توسيع المبيعات وهوامش الربح
+                  {t.roiFocusSales}
                 </button>
                 <button
                   type="button"
@@ -137,7 +143,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
                       : 'bg-slate-900/60 border-slate-700 text-slate-300 hover:border-slate-600'
                   }`}
                 >
-                  وقف الهدر التشغيلي والتفويض
+                  {t.roiFocusOps}
                 </button>
                 <button
                   type="button"
@@ -148,7 +154,7 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
                       : 'bg-slate-900/60 border-slate-700 text-slate-300 hover:border-slate-600'
                   }`}
                 >
-                  صناعة القرار وحل النزاعات
+                  {t.roiFocusLeadership}
                 </button>
               </div>
             </div>
@@ -156,20 +162,20 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
           </div>
 
           {/* Results Summary Card (5 cols) */}
-          <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-950 border border-amber-500/40 rounded-2xl p-6 sm:p-7 shadow-xl relative text-right">
+          <div className={`lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-950 border border-amber-500/40 rounded-2xl p-6 sm:p-7 shadow-xl relative ${isRtl ? 'text-right' : 'text-left'}`}>
             <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
               <span className="text-xs font-bold text-slate-400 uppercase">
-                الأثر التقديري المتوقع
+                {t.roiResultKicker}
               </span>
               <span className="text-xs font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/80 px-2 py-0.5 rounded">
-                مبني على نتائج عملاء سابقين
+                {t.roiResultBadge}
               </span>
             </div>
 
             <div className="space-y-4">
               <div>
                 <span className="text-xs text-slate-400 block">
-                  النمو أو التوفير السنوي المحتمل:
+                  {t.roiGrowthLabel}
                 </span>
                 <span className="text-3xl font-black text-amber-400 font-mono tracking-tight block mt-0.5">
                   +{formatCurrency(estimatedAnnualGrowth)}
@@ -178,29 +184,29 @@ export const RoiCalculator: React.FC<RoiCalculatorProps> = ({ onOpenBooking }) =
 
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-800">
-                  <span className="text-[11px] text-slate-400 block">ساعات قيادية موفرة:</span>
+                  <span className="text-[11px] text-slate-400 block">{t.roiHoursSavedLabel}</span>
                   <span className="font-extrabold text-white font-mono text-base">
-                    +{estimatedHoursSavedYearly} ساعة/سنة
+                    +{estimatedHoursSavedYearly} {t.roiHoursPerYear}
                   </span>
                 </div>
                 <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-800">
-                  <span className="text-[11px] text-slate-400 block">مضاعف الاستثمار (ROI):</span>
+                  <span className="text-[11px] text-slate-400 block">{t.roiMultipleLabel}</span>
                   <span className="font-extrabold text-emerald-400 font-mono text-base">
-                    {roiMultiplier}x أضعاف
+                    {roiMultiplier}x {t.roiMultipleSuffix}
                   </span>
                 </div>
               </div>
 
               <p className="text-xs text-slate-400 leading-relaxed pt-2">
-                * الحسابات تقديرية وتستند إلى متوسط نتائج العملاء الذين طبقوا خطط العمل التنفيذية المعتمدة خلال أول 90 يوماً.
+                {t.roiDisclaimer}
               </p>
 
               <button
                 onClick={onOpenBooking}
                 className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer mt-4"
               >
-                <span>احجز جلستك وابدأ بمضاعفة عوائدك</span>
-                <ArrowLeft className="w-4 h-4" />
+                <span>{t.roiBtnBook}</span>
+                {isRtl ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
               </button>
             </div>
 

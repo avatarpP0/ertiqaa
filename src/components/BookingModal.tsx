@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { X, Calendar, Clock, Check, User, Mail, Phone, Briefcase, FileText, ArrowLeft, ArrowRight, ShieldCheck, Download, Share2, Sparkles } from 'lucide-react';
+import { X, Calendar, Clock, Check, ArrowLeft, ArrowRight, Phone } from 'lucide-react';
 import { Program, BookingSubmission } from '../types';
-import { PROGRAMS, AVAILABLE_TIME_SLOTS, COACH_INFO } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
+import { getPrograms, getTimeSlots } from '../data/mockData';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -14,11 +15,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   initialProgramId,
   onClose,
 }) => {
+  const { language, isRtl, t } = useLanguage();
+  const programs = getPrograms(language);
+  const timeSlots = getTimeSlots(language);
+
   if (!isOpen) return null;
 
   const [step, setStep] = useState<number>(1);
   const [selectedProgramId, setSelectedProgramId] = useState<string>(
-    initialProgramId || PROGRAMS[0].id
+    initialProgramId || programs[0].id
   );
 
   // Generate the next 7 available dates
@@ -27,16 +32,18 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     const daysArabic = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
     const monthsArabic = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
     
+    const daysEnglish = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const monthsEnglish = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
     const today = new Date();
     for (let i = 1; i <= 7; i++) {
       const d = new Date(today);
       d.setDate(today.getDate() + i);
-      // Skip Fridays if preferred, but include for online coaching flexibility
       dates.push({
         fullDate: d.toISOString().split('T')[0],
-        dayName: daysArabic[d.getDay()],
+        dayName: language === 'en' ? daysEnglish[d.getDay()] : daysArabic[d.getDay()],
         dayNum: d.getDate(),
-        monthName: monthsArabic[d.getMonth()],
+        monthName: language === 'en' ? monthsEnglish[d.getMonth()] : monthsArabic[d.getMonth()],
       });
     }
     return dates;
@@ -44,7 +51,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
   const availableDates = generateDates();
   const [selectedDate, setSelectedDate] = useState<string>(availableDates[0].fullDate);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>(AVAILABLE_TIME_SLOTS[0]);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>(timeSlots[0]);
 
   // Client Details
   const [formData, setFormData] = useState({
@@ -57,7 +64,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
   const [confirmedBooking, setConfirmedBooking] = useState<BookingSubmission | null>(null);
 
-  const selectedProgram = PROGRAMS.find((p) => p.id === selectedProgramId) || PROGRAMS[0];
+  const selectedProgram = programs.find((p) => p.id === selectedProgramId) || programs[0];
 
   const handleNextToStep2 = () => {
     setStep(2);
@@ -95,23 +102,23 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200">
       <div
-        className="bg-white rounded-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200 flex flex-col relative text-right"
+        className={`bg-white rounded-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200 flex flex-col relative ${isRtl ? 'text-right' : 'text-left'}`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="sticky top-0 bg-white/95 backdrop-blur-md p-5 border-b border-slate-100 flex items-center justify-between z-10">
           <div>
             <span className="text-xs font-bold text-amber-700 uppercase tracking-wider block">
-              نظام الحجز المباشر · د. طارق المنصور
+              {language === 'en' ? 'Direct Advisory Booking · Dr. Tarek Al-Mansoor' : 'نظام الحجز المباشر · د. طارق المنصور'}
             </span>
             <h3 className="text-lg font-extrabold text-slate-900 mt-0.5">
-              {step === 4 ? 'تم تأكيد حجزك بنجاح' : 'حجز موعد استشارة وتدريب'}
+              {step === 4 ? t.bookingConfirmedTitle : t.bookingModalTitle}
             </h3>
           </div>
           <button
             onClick={handleResetAndClose}
             className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-colors cursor-pointer"
-            aria-label="إغلاق"
+            aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -122,13 +129,13 @@ export const BookingModal: React.FC<BookingModalProps> = ({
           <div className="px-6 pt-4 pb-2 bg-stone-50 border-b border-slate-100">
             <div className="flex items-center justify-between text-xs font-bold text-slate-500 mb-2">
               <span className={step >= 1 ? 'text-amber-700 font-extrabold' : ''}>
-                1. اختيار البرنامج
+                {t.bookingStep1}
               </span>
               <span className={step >= 2 ? 'text-amber-700 font-extrabold' : ''}>
-                2. الموعد والتوقيت
+                {t.bookingStep2}
               </span>
               <span className={step >= 3 ? 'text-amber-700 font-extrabold' : ''}>
-                3. بيانات المستفيد
+                {t.bookingStep3}
               </span>
             </div>
             <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
@@ -146,11 +153,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
           {step === 1 && (
             <div className="space-y-4">
               <h4 className="text-sm font-bold text-slate-900 mb-3">
-                حدد البرنامج أو الجلسة التي ترغب بحجزها:
+                {t.bookingSelectPrompt}
               </h4>
 
               <div className="space-y-3">
-                {PROGRAMS.map((prog) => {
+                {programs.map((prog) => {
                   const isSelected = selectedProgramId === prog.id;
                   return (
                     <div
@@ -169,7 +176,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                           </h5>
                           {prog.isPopular && (
                             <span className="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded">
-                              الأكثر طلباً
+                              {language === 'en' ? 'Most Popular' : 'الأكثر طلباً'}
                             </span>
                           )}
                         </div>
@@ -199,14 +206,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               <div className="pt-4 flex items-center justify-between">
                 <span className="text-xs text-slate-500">
-                  مشمولة بضمان استرداد القيمة 100%
+                  {t.guaranteeShort}
                 </span>
                 <button
                   onClick={handleNextToStep2}
                   className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm flex items-center gap-2 cursor-pointer"
                 >
-                  <span>متابعة للمواعيد</span>
-                  <ArrowLeft className="w-4 h-4" />
+                  <span>{t.bookingNextToDates}</span>
+                  {isRtl ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -218,7 +225,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               <div>
                 <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-amber-600" />
-                  <span>اختر اليوم المناسب:</span>
+                  <span>{t.bookingSelectDay}</span>
                 </h4>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
                   {availableDates.map((item) => {
@@ -249,24 +256,24 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               <div>
                 <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-2">
                   <Clock className="w-4 h-4 text-amber-600" />
-                  <span>الأوقات المتاحة للجلسة (بتوقيت مكة المكرمة):</span>
+                  <span>{t.bookingAvailableTimes}</span>
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {AVAILABLE_TIME_SLOTS.map((slot) => {
+                  {timeSlots.map((slot) => {
                     const isSelected = selectedTimeSlot === slot;
                     return (
                       <button
                         key={slot}
                         onClick={() => setSelectedTimeSlot(slot)}
-                        className={`p-3 rounded-xl border text-right text-xs sm:text-sm font-medium transition-all flex items-center justify-between cursor-pointer ${
+                        className={`p-3 rounded-xl border text-xs sm:text-sm font-medium transition-all flex items-center justify-between cursor-pointer ${
                           isSelected
                             ? 'bg-amber-50 border-amber-500 text-amber-950 font-bold'
                             : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
-                        }`}
+                        } ${isRtl ? 'text-right' : 'text-left'}`}
                       >
                         <span>{slot}</span>
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
-                          متاح
+                          {language === 'en' ? 'Available' : 'متاح'}
                         </span>
                       </button>
                     );
@@ -279,15 +286,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   onClick={() => setStep(1)}
                   className="text-xs text-slate-600 hover:text-slate-900 font-bold flex items-center gap-1 cursor-pointer"
                 >
-                  <ArrowRight className="w-3.5 h-3.5" />
-                  <span>الرجوع للبرنامج</span>
+                  {isRtl ? <ArrowRight className="w-3.5 h-3.5" /> : <ArrowLeft className="w-3.5 h-3.5" />}
+                  <span>{t.bookingBackToProgram}</span>
                 </button>
                 <button
                   onClick={handleNextToStep3}
                   className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-2.5 rounded-xl text-sm flex items-center gap-2 cursor-pointer"
                 >
-                  <span>متابعة لبيانات الحجز</span>
-                  <ArrowLeft className="w-4 h-4" />
+                  <span>{t.bookingNextToDetails}</span>
+                  {isRtl ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -308,19 +315,19 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   onClick={() => setStep(2)}
                   className="text-amber-700 underline text-xs font-bold"
                 >
-                  تعديل الموعد
+                  {t.bookingEditSchedule}
                 </button>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    الاسم الكامل <span className="text-rose-500">*</span>
+                    {t.contactFormName} <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="مثال: عبد الرحمن بن علي"
+                    placeholder={language === 'en' ? 'e.g. John Smith' : 'مثال: عبد الرحمن بن علي'}
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full bg-stone-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500"
@@ -329,16 +336,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    رقم الواتساب <span className="text-rose-500">*</span>
+                    {t.contactFormPhone} <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="tel"
                     required
-                    placeholder="05XXXXXXXX"
+                    placeholder="01149556339"
                     dir="ltr"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-stone-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 text-right"
+                    className={`w-full bg-stone-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 ${isRtl ? 'text-right' : 'text-left'}`}
                   />
                 </div>
               </div>
@@ -346,7 +353,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    البريد الإلكتروني <span className="text-rose-500">*</span>
+                    {t.contactFormEmail} <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="email"
@@ -355,17 +362,17 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                     dir="ltr"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-stone-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 text-right"
+                    className={`w-full bg-stone-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 ${isRtl ? 'text-right' : 'text-left'}`}
                   />
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    المسمى الوظيفي / اسم الشركة
+                    {t.bookingRoleLabel}
                   </label>
                   <input
                     type="text"
-                    placeholder="مثال: مؤسس ورئيس تنفيذي"
+                    placeholder={t.bookingRolePlaceholder}
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value })}
                     className="w-full bg-stone-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500"
@@ -375,11 +382,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  أهم نقطة أو تحدي تود التركيز عليه في الجلسة:
+                  {t.bookingNotesLabel}
                 </label>
                 <textarea
                   rows={3}
-                  placeholder="ملاحظات تمهيدية تساعد المستشار على التحضير للجلسة..."
+                  placeholder={t.bookingNotesPlaceholder}
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                   className="w-full bg-stone-50 border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500"
@@ -389,14 +396,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               {/* Payment Methods Notice */}
               <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-600 space-y-1.5">
                 <div className="flex items-center justify-between font-bold text-slate-800">
-                  <span>طرق السداد المتاحة:</span>
-                  <span className="text-emerald-700 font-semibold text-[11px]">لا يُطلب الدفع إلا بعد تأكيد الموعد</span>
+                  <span>{t.bookingPaymentsNotice}</span>
+                  <span className="text-emerald-700 font-semibold text-[11px]">{t.bookingPaymentsSub}</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">مدى Mada</span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">Mada</span>
                   <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">Apple Pay</span>
-                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">فيزا / ماستركارد</span>
-                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">تحويل بنكي رسمي مع فاتورة ضريبية</span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">Visa / Mastercard</span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 text-[10px] font-bold text-slate-700">{language === 'en' ? 'Corporate Wire + VAT Invoice' : 'تحويل بنكي رسمي مع فاتورة ضريبية'}</span>
                 </div>
               </div>
 
@@ -406,15 +413,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   onClick={() => setStep(2)}
                   className="text-xs text-slate-600 hover:text-slate-900 font-bold flex items-center gap-1 cursor-pointer"
                 >
-                  <ArrowRight className="w-3.5 h-3.5" />
-                  <span>تعديل الموعد</span>
+                  {isRtl ? <ArrowRight className="w-3.5 h-3.5" /> : <ArrowLeft className="w-3.5 h-3.5" />}
+                  <span>{t.bookingEditSchedule}</span>
                 </button>
                 <button
                   type="submit"
                   className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-7 py-3 rounded-xl text-sm flex items-center gap-2 cursor-pointer shadow-md"
                 >
                   <Check className="w-4 h-4 stroke-[3]" />
-                  <span>تأكيد الحجز النهائي</span>
+                  <span>{t.bookingBtnFinalConfirm}</span>
                 </button>
               </div>
             </form>
@@ -425,30 +432,30 @@ export const BookingModal: React.FC<BookingModalProps> = ({
             <div className="text-center space-y-6 animate-in zoom-in-95 duration-200">
               
               {/* Ticket Card */}
-              <div className="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 text-right relative overflow-hidden shadow-2xl">
+              <div className={`bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 relative overflow-hidden shadow-2xl ${isRtl ? 'text-right' : 'text-left'}`}>
                 <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
 
                 <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
                   <div>
                     <span className="text-[10px] text-amber-400 font-mono block">
-                      رقم التذكرة المرجعية:
+                      {t.bookingTicketRef}
                     </span>
                     <span className="text-lg font-mono font-black text-white">
                       {confirmedBooking.id}
                     </span>
                   </div>
-                  <div className="text-left">
-                    <span className="text-[10px] text-slate-400 block">حالة الحجز:</span>
+                  <div className={isRtl ? 'text-left' : 'text-right'}>
+                    <span className="text-[10px] text-slate-400 block">{t.bookingTicketStatus}</span>
                     <span className="text-xs font-bold text-emerald-400 flex items-center gap-1">
                       <Check className="w-3.5 h-3.5" />
-                      مؤكد بنجاح
+                      {t.bookingStatusConfirmed}
                     </span>
                   </div>
                 </div>
 
                 <div className="space-y-3 text-xs sm:text-sm">
                   <div>
-                    <span className="text-slate-400 text-xs block">البرنامج المحجوز:</span>
+                    <span className="text-slate-400 text-xs block">{t.bookingTicketProgram}</span>
                     <h5 className="font-bold text-amber-400 text-base">
                       {confirmedBooking.programTitle}
                     </h5>
@@ -456,29 +463,29 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <div>
-                      <span className="text-slate-400 text-[11px] block">تاريخ اللقاء:</span>
+                      <span className="text-slate-400 text-[11px] block">{t.bookingTicketDate}</span>
                       <span className="font-bold text-white font-mono">{confirmedBooking.date}</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 text-[11px] block">توقيت الجلسة:</span>
+                      <span className="text-slate-400 text-[11px] block">{t.bookingTicketTime}</span>
                       <span className="font-bold text-white">{confirmedBooking.timeSlot}</span>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <div>
-                      <span className="text-slate-400 text-[11px] block">المستفيد:</span>
+                      <span className="text-slate-400 text-[11px] block">{t.bookingTicketClient}</span>
                       <span className="font-medium text-slate-200">{confirmedBooking.name}</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 text-[11px] block">الوسيلة:</span>
-                      <span className="text-emerald-400 font-medium">رابط زووم (سري وخاص)</span>
+                      <span className="text-slate-400 text-[11px] block">{t.bookingTicketFormat}</span>
+                      <span className="text-emerald-400 font-medium">{t.bookingTicketFormatVal}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-5 pt-4 border-t border-slate-800 text-xs text-slate-300 leading-relaxed">
-                  تم إرسال تفاصيل اللقاء واستبيان التشخيص المسبق إلى بريدك الإلكتروني{' '}
+                  {t.bookingTicketEmailNote}{' '}
                   <strong className="text-amber-300 font-mono">{confirmedBooking.email}</strong>.
                 </div>
               </div>
@@ -487,21 +494,23 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a
                   href={`https://wa.me/201149556339?text=${encodeURIComponent(
-                    `مرحباً د. طارق، قمت بحجز ${confirmedBooking.programTitle} برقم مرجعي: ${confirmedBooking.id}. موعدي هو ${confirmedBooking.date} في ${confirmedBooking.timeSlot}. أرجو تزويدي بالاستبيان التحضيري.`
+                    language === 'en'
+                      ? `Hello Dr. Tarek, I reserved ${confirmedBooking.programTitle} with Ticket Ref: ${confirmedBooking.id}. Date: ${confirmedBooking.date} at ${confirmedBooking.timeSlot}. Please send the pre-session questionnaire.`
+                      : `مرحباً د. طارق، قمت بحجز ${confirmedBooking.programTitle} برقم مرجعي: ${confirmedBooking.id}. موعدي هو ${confirmedBooking.date} في ${confirmedBooking.timeSlot}. أرجو تزويدي بالاستبيان التحضيري.`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm shadow-md transition-all"
                 >
                   <Phone className="w-4 h-4" />
-                  <span>تأكيد الموعد عبر واتساب الآن</span>
+                  <span>{t.bookingBtnWhatsAppConfirm}</span>
                 </a>
 
                 <button
                   onClick={handleResetAndClose}
                   className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-5 py-3 rounded-xl text-xs sm:text-sm transition-colors cursor-pointer"
                 >
-                  إغلاق النافذة
+                  {t.bookingBtnClose}
                 </button>
               </div>
 

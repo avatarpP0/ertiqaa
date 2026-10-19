@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
-import { Star, Quote, CheckCircle2, TrendingUp, Building2 } from 'lucide-react';
-import { TESTIMONIALS } from '../data/mockData';
+import { Star, CheckCircle2, TrendingUp } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { getTestimonials } from '../data/mockData';
 
 export const TestimonialsSection: React.FC = () => {
+  const { language, isRtl, t } = useLanguage();
+  const testimonials = getTestimonials(language);
+
   const [activeFilter, setActiveFilter] = useState<'all' | 'startup' | 'executive' | 'business'>('all');
 
   const filters = [
-    { id: 'all', label: 'جميع التجارب' },
-    { id: 'startup', label: 'شركات ناشئة وتقنية' },
-    { id: 'executive', label: 'قيادات تنفيذية وإدارية' },
-    { id: 'business', label: 'تجارة وتجزئة وأعمال' },
+    { id: 'all', label: t.testiFilterAll },
+    { id: 'startup', label: t.testiFilterStartup },
+    { id: 'executive', label: t.testiFilterExecutive },
+    { id: 'business', label: t.testiFilterBusiness },
   ];
 
   const filteredTestimonials =
     activeFilter === 'all'
-      ? TESTIMONIALS
-      : TESTIMONIALS.filter((t) => t.category === activeFilter);
+      ? testimonials
+      : testimonials.filter((item) => item.category === activeFilter);
 
   return (
     <section id="testimonials" className="py-24 bg-[#0E131F] text-white border-b border-white/5 relative">
@@ -24,14 +28,14 @@ export const TestimonialsSection: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-12">
           <span className="text-amber-400 font-bold text-xs tracking-wider uppercase bg-amber-500/10 border border-amber-500/30 px-3.5 py-1 rounded-full mb-3">
-            قصص النجاح والأثر
+            {t.testiKicker}
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black text-white leading-tight">
-            ماذا يقول قادة الأعمال بعد الجلسات والبرامج؟
+            {t.testiTitle}
           </h2>
           <div className="w-16 h-1 bg-amber-500 rounded-full mt-4 mb-4" />
           <p className="text-slate-300 text-base sm:text-lg">
-            تجارب حقيقية من رؤساء تنفيذيين ورواد أعمال أحدثوا نقلات نوعية في مسيرتهم وأعمالهم.
+            {t.testiSubtitle}
           </p>
         </div>
 
@@ -62,7 +66,7 @@ export const TestimonialsSection: React.FC = () => {
           {filteredTestimonials.map((item) => (
             <div
               key={item.id}
-              className="bg-[#0B0F17] border border-white/10 rounded-3xl p-7 sm:p-9 flex flex-col justify-between hover:border-amber-400/40 hover:shadow-2xl transition-all relative text-right"
+              className={`bg-[#0B0F17] border border-white/10 rounded-3xl p-7 sm:p-9 flex flex-col justify-between hover:border-amber-400/40 hover:shadow-2xl transition-all relative ${isRtl ? 'text-right' : 'text-left'}`}
             >
               <div>
                 {/* Metric Strip at Top of Card */}
@@ -117,17 +121,17 @@ export const TestimonialsSection: React.FC = () => {
         <div className="mt-14 text-center p-7 bg-[#0B0F17] border border-white/10 rounded-3xl max-w-2xl mx-auto flex flex-col sm:flex-row items-center justify-around gap-6 text-xs sm:text-sm text-slate-300">
           <div>
             <span className="font-black text-amber-400 text-2xl block font-mono">4.96 / 5.0</span>
-            <span className="text-slate-400 mt-1 block">متوسط تقييم الجلسات</span>
+            <span className="text-slate-400 mt-1 block">{t.testiStatScore}</span>
           </div>
           <div className="hidden sm:block w-px h-10 bg-white/10" />
           <div>
             <span className="font-black text-amber-400 text-2xl block font-mono">98.4%</span>
-            <span className="text-slate-400 mt-1 block">يوصون بالجلسات لزملائهم</span>
+            <span className="text-slate-400 mt-1 block">{t.testiStatRecommend}</span>
           </div>
           <div className="hidden sm:block w-px h-10 bg-white/10" />
           <div>
             <span className="font-black text-amber-400 text-2xl block font-mono">82%</span>
-            <span className="text-slate-400 mt-1 block">كرروا الاشتراك في برامج متقدمة</span>
+            <span className="text-slate-400 mt-1 block">{t.testiStatRepeat}</span>
           </div>
         </div>
 

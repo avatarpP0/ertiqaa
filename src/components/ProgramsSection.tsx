@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Calendar, Check, ChevronLeft, Clock, Monitor, Sparkles, Star, Users, Info } from 'lucide-react';
+import { Calendar, Check, Clock, Monitor, Star, Info } from 'lucide-react';
 import { Program } from '../types';
-import { PROGRAMS } from '../data/mockData';
+import { useLanguage } from '../context/LanguageContext';
+import { getPrograms } from '../data/mockData';
 
 interface ProgramsSectionProps {
   onOpenBooking: (programId: string) => void;
@@ -12,10 +13,19 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
   onOpenBooking,
   onSelectProgramDetails
 }) => {
+  const { language, isRtl, t } = useLanguage();
+  const programs = getPrograms(language);
+
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [currency, setCurrency] = useState<'SAR' | 'AED' | 'USD'>('SAR');
 
-  const categories = [
+  const categories = language === 'en' ? [
+    { id: 'all', name: 'All Programs & Tracks' },
+    { id: 'individual', name: '1-on-1 Advisory' },
+    { id: 'executive', name: 'Executive Leadership' },
+    { id: 'growth', name: 'Venture Acceleration' },
+    { id: 'corporate', name: 'Corporate & Boards' },
+  ] : [
     { id: 'all', name: 'جميع البرامج والخدمات' },
     { id: 'individual', name: 'استشارات فردية 1-on-1' },
     { id: 'executive', name: 'برامج القيادة التنفيذية' },
@@ -24,7 +34,7 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
   ];
 
   const getConvertedPrice = (prog: Program) => {
-    if (prog.price.includes('مخصص')) {
+    if (prog.price.includes('مخصص') || prog.price.toLowerCase().includes('custom')) {
       return { current: prog.price, original: undefined };
     }
     if (currency === 'AED') {
@@ -42,8 +52,8 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
 
   const filteredPrograms =
     activeCategory === 'all'
-      ? PROGRAMS
-      : PROGRAMS.filter((p) => p.category === activeCategory);
+      ? programs
+      : programs.filter((p) => p.category === activeCategory);
 
   return (
     <section id="programs" className="py-24 bg-[#0B0F17] text-white border-b border-white/5 relative">
@@ -52,20 +62,19 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
         {/* Section Header */}
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-12">
           <span className="text-amber-400 font-bold text-xs tracking-wider uppercase bg-amber-500/10 border border-amber-500/30 px-3.5 py-1 rounded-full mb-3">
-            البرامج والخدمات الاستشارية
+            {t.programsKicker}
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-black text-white leading-tight">
-            حلول مصممة لمضاعفة أثرك القيادي وعوائد أعمالك
+            {t.programsTitle}
           </h2>
           <div className="w-16 h-1 bg-amber-500 rounded-full mt-4 mb-4" />
           <p className="text-slate-300 text-base sm:text-lg">
-            سواء كنت بحاجة لجلسة قرار حاسمة أو مرافقة استشارية مستمرة على مدار أشهر، 
-            نقدم مسارات مدروسة تضمن تحقيق نتائج نوعية وملموسة.
+            {t.programsSubtitle}
           </p>
 
           {/* Luxury Currency Switcher */}
           <div className="mt-8 flex items-center gap-2 bg-slate-900/90 border border-white/10 px-4 py-2 rounded-2xl shadow-xl text-xs">
-            <span className="text-slate-400 font-bold">العملة المعروضة:</span>
+            <span className="text-slate-400 font-bold">{t.programsCurrencyLabel}</span>
             <div className="flex items-center gap-1.5">
               <button
                 type="button"
@@ -74,7 +83,7 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                   currency === 'SAR' ? 'bg-amber-400 text-slate-950 shadow-md font-black' : 'text-slate-300 hover:text-white'
                 }`}
               >
-                ر.س (SAR)
+                SAR (ر.س)
               </button>
               <button
                 type="button"
@@ -83,7 +92,7 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                   currency === 'AED' ? 'bg-amber-400 text-slate-950 shadow-md font-black' : 'text-slate-300 hover:text-white'
                 }`}
               >
-                د.إ (AED)
+                AED (د.إ)
               </button>
               <button
                 type="button"
@@ -92,7 +101,7 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                   currency === 'USD' ? 'bg-amber-400 text-slate-950 shadow-md font-black' : 'text-slate-300 hover:text-white'
                 }`}
               >
-                $ (USD)
+                USD ($)
               </button>
             </div>
           </div>
@@ -131,13 +140,13 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                   program.isPopular
                     ? 'bg-[#0E131F] border-2 border-amber-400/80 shadow-2xl relative'
                     : 'bg-[#0E131F] border border-white/10 hover:border-amber-400/40 shadow-xl'
-                } p-7 sm:p-9 text-right`}
+                } p-7 sm:p-9 ${isRtl ? 'text-right' : 'text-left'}`}
               >
                 {/* Popular Ribbon */}
                 {program.isPopular && (
-                  <div className="absolute -top-3.5 right-8 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-xs font-black px-4 py-1 rounded-full shadow-lg flex items-center gap-1.5">
+                  <div className={`absolute -top-3.5 ${isRtl ? 'right-8' : 'left-8'} bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-xs font-black px-4 py-1 rounded-full shadow-lg flex items-center gap-1.5`}>
                     <Star className="w-3.5 h-3.5 fill-slate-950" />
-                    <span>البرنامج الأكثر طلباً للمبتدئين</span>
+                    <span>{t.programsPopularBadge}</span>
                   </div>
                 )}
 
@@ -172,7 +181,7 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                   {/* Target Audience Box */}
                   <div className="bg-slate-900/80 border border-white/5 rounded-2xl p-4 mb-6 text-xs text-slate-300">
                     <span className="font-bold text-amber-300 block mb-1">
-                      الفئة المستهدفة:
+                      {t.programsTargetAudience}
                     </span>
                     <p className="leading-relaxed text-slate-400">
                       {program.targetAudience}
@@ -187,7 +196,7 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                   {/* Features Deliverables List */}
                   <div className="border-t border-white/10 pt-6 mb-6">
                     <span className="text-xs font-bold text-amber-400 uppercase tracking-wider block mb-3.5">
-                      أبرز المخرجات والمميزات المشمولة:
+                      {t.programsKeyFeatures}
                     </span>
                     <ul className="space-y-3 text-xs sm:text-sm text-slate-200">
                       {program.features.map((feat, idx) => (
@@ -207,7 +216,7 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                   <div className="flex items-baseline justify-between mb-5">
                     <div>
                       <span className="text-xs text-slate-400 block mb-1">
-                        الاستثمار المطلوب:
+                        {t.programsInvestmentRequired}
                       </span>
                       <div className="flex items-baseline gap-2.5">
                         <span className="text-3xl font-black text-amber-400 font-mono">
@@ -227,7 +236,7 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                         className="text-xs text-amber-400 hover:text-amber-300 font-bold underline underline-offset-4 flex items-center gap-1 cursor-pointer"
                       >
                         <Info className="w-3.5 h-3.5" />
-                        <span>عرض المنهاج والجدول</span>
+                        <span>{t.programsViewSyllabus}</span>
                       </button>
                     )}
                   </div>
@@ -239,7 +248,7 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                       className="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black py-3.5 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer"
                     >
                       <Calendar className="w-4 h-4 text-slate-950" />
-                      <span>حجز هذا البرنامج</span>
+                      <span>{t.programsBtnBook}</span>
                     </button>
 
                     {program.syllabus ? (
@@ -247,14 +256,14 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
                         onClick={() => onSelectProgramDetails(program)}
                         className="w-full bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-bold py-3.5 px-4 rounded-xl transition-all text-xs sm:text-sm cursor-pointer"
                       >
-                        <span>تفاصيل الخطة الزمنية</span>
+                        <span>{t.programsBtnTimeline}</span>
                       </button>
                     ) : (
                       <a
                         href="#contact"
                         className="w-full bg-slate-900 hover:bg-slate-800 border border-white/10 text-slate-200 font-bold py-3.5 px-4 rounded-xl transition-all text-xs sm:text-sm text-center flex items-center justify-center"
                       >
-                        <span>طلب تفصيل خاص</span>
+                        <span>{t.programsBtnCustom}</span>
                       </a>
                     )}
                   </div>
@@ -266,20 +275,20 @@ export const ProgramsSection: React.FC<ProgramsSectionProps> = ({
         </div>
 
         {/* Corporate custom banner */}
-        <div className="mt-14 bg-gradient-to-r from-slate-900 to-[#0E131F] border border-amber-500/30 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 text-right">
+        <div className={`mt-14 bg-gradient-to-r from-slate-900 to-[#0E131F] border border-amber-500/30 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6 ${isRtl ? 'text-right' : 'text-left'}`}>
           <div className="space-y-1.5">
             <h4 className="text-lg font-black text-white">
-              هل تمثل شركة أو جهة حكومية تبحث عن برنامج تدريبي مخصص بالكامل؟
+              {t.programsCorporateTitle}
             </h4>
             <p className="text-xs sm:text-sm text-slate-300">
-              نصمم ورش عمل استراتيجية ومخيمات تدريبية للقيادات التنفيذية ومجالس الإدارة مع خطط متابعة سنوية.
+              {t.programsCorporateDesc}
             </p>
           </div>
           <a
             href="#contact"
             className="shrink-0 bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-6 py-3 rounded-xl shadow-md text-xs sm:text-sm transition-colors whitespace-nowrap"
           >
-            طلب عرض فني ومالي مخصص
+            {t.programsBtnCustomQuote}
           </a>
         </div>
 

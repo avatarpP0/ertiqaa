@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import { Sparkles, Check, ArrowLeft, RotateCcw, Calendar, CheckCircle2 } from 'lucide-react';
-import { QUIZ_QUESTIONS, PROGRAMS } from '../data/mockData';
+import { Sparkles, Check, ArrowLeft, ArrowRight, RotateCcw, Calendar, CheckCircle2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+import { getQuizQuestions, getPrograms } from '../data/mockData';
 
 interface ProgramMatcherQuizProps {
   onOpenBooking: (programId: string) => void;
 }
 
 export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBooking }) => {
+  const { language, isRtl, t } = useLanguage();
+  const quizQuestions = getQuizQuestions(language);
+  const programs = getPrograms(language);
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [resultProgramId, setResultProgramId] = useState<string | null>(null);
@@ -15,7 +20,7 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
     const updatedAnswers = [...answers, recommendedProgramId];
     setAnswers(updatedAnswers);
 
-    if (currentQuestionIndex < QUIZ_QUESTIONS.length - 1) {
+    if (currentQuestionIndex < quizQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       const frequencyMap: Record<string, number> = {};
@@ -42,10 +47,10 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
   };
 
   const matchedProgram = resultProgramId
-    ? PROGRAMS.find((p) => p.id === resultProgramId) || PROGRAMS[0]
+    ? programs.find((p) => p.id === resultProgramId) || programs[0]
     : null;
 
-  const currentQ = QUIZ_QUESTIONS[currentQuestionIndex];
+  const currentQ = quizQuestions[currentQuestionIndex];
 
   return (
     <section id="quiz" className="py-20 bg-[#0B0F17] text-white relative overflow-hidden border-b border-white/5">
@@ -59,13 +64,13 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
         <div className="text-center max-w-2xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold mb-3">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>مساعد التوجيه الاستراتيجي الذكي</span>
+            <span>{t.quizKicker}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-white">
-            محتار في اختيار البرنامج الأنسب؟
+            {t.quizTitle}
           </h2>
           <p className="text-slate-300 text-sm mt-3">
-            أجب على 3 أسئلة سريعة (أقل من دقيقة) لنتعرف على واقعك ونرشح لك الحل الأسرع والأكثر فاعلية لتحقيق أهدافك.
+            {t.quizSubtitle}
           </p>
         </div>
 
@@ -76,23 +81,23 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
               {/* Progress Bar */}
               <div className="flex items-center justify-between text-xs text-slate-400 mb-3 font-semibold">
                 <span>
-                  السؤال {currentQuestionIndex + 1} من {QUIZ_QUESTIONS.length}
+                  {t.quizQuestionProgress} {currentQuestionIndex + 1} {t.quizOf} {quizQuestions.length}
                 </span>
                 <span className="font-mono text-amber-400">
-                  {Math.round(((currentQuestionIndex + 1) / QUIZ_QUESTIONS.length) * 100)}%
+                  {Math.round(((currentQuestionIndex + 1) / quizQuestions.length) * 100)}%
                 </span>
               </div>
               <div className="w-full bg-slate-900 h-2 rounded-full overflow-hidden mb-8 border border-white/5">
                 <div
                   className="bg-gradient-to-r from-amber-400 to-amber-500 h-full transition-all duration-300 rounded-full"
                   style={{
-                    width: `${((currentQuestionIndex + 1) / QUIZ_QUESTIONS.length) * 100}%`
+                    width: `${((currentQuestionIndex + 1) / quizQuestions.length) * 100}%`
                   }}
                 />
               </div>
 
               {/* Question Text */}
-              <h3 className="text-xl sm:text-2xl font-black text-white mb-6 text-right leading-snug">
+              <h3 className={`text-xl sm:text-2xl font-black text-white mb-6 leading-snug ${isRtl ? 'text-right' : 'text-left'}`}>
                 {currentQ.question}
               </h3>
 
@@ -102,7 +107,7 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
                   <button
                     key={idx}
                     onClick={() => handleSelectOption(option.recommendedProgramId)}
-                    className="w-full text-right p-5 rounded-2xl border border-white/10 bg-slate-900/60 hover:bg-slate-900 hover:border-amber-400/80 hover:shadow-xl transition-all group flex items-start justify-between cursor-pointer"
+                    className={`w-full p-5 rounded-2xl border border-white/10 bg-slate-900/60 hover:bg-slate-900 hover:border-amber-400/80 hover:shadow-xl transition-all group flex items-start justify-between cursor-pointer ${isRtl ? 'text-right' : 'text-left'}`}
                   >
                     <div>
                       <span className="block text-sm sm:text-base font-bold text-slate-100 group-hover:text-amber-300 transition-colors">
@@ -113,7 +118,11 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
                       </span>
                     </div>
                     <div className="w-7 h-7 rounded-full border border-white/10 flex items-center justify-center shrink-0 mt-1 group-hover:border-amber-400 group-hover:bg-amber-400/10 transition-colors">
-                      <ArrowLeft className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-400 group-hover:-translate-x-0.5 transition-transform" />
+                      {isRtl ? (
+                        <ArrowLeft className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-400 group-hover:-translate-x-0.5 transition-transform" />
+                      ) : (
+                        <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-400 group-hover:translate-x-0.5 transition-transform" />
+                      )}
                     </div>
                   </button>
                 ))}
@@ -127,7 +136,7 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
               </div>
 
               <span className="text-xs font-bold text-amber-400 uppercase tracking-wider block mb-1">
-                البرنامج الموصى به لواقعك وتحدياتك
+                {t.quizResultKicker}
               </span>
               <h3 className="text-2xl sm:text-3xl font-black text-white mb-2">
                 {matchedProgram?.title}
@@ -137,9 +146,9 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
               </p>
 
               {/* Feature Highlights of Matched Program */}
-              <div className="bg-slate-900 border border-white/10 rounded-2xl p-6 text-right max-w-xl mx-auto mb-6">
+              <div className={`bg-slate-900 border border-white/10 rounded-2xl p-6 max-w-xl mx-auto mb-6 ${isRtl ? 'text-right' : 'text-left'}`}>
                 <span className="text-xs font-bold text-slate-300 block mb-3.5">
-                  أهم المخرجات التي ستحصل عليها:
+                  {t.quizKeyDeliverables}
                 </span>
                 <div className="space-y-2.5 text-xs sm:text-sm text-slate-200">
                   {matchedProgram?.features.slice(0, 3).map((feat, i) => (
@@ -152,13 +161,13 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
 
                 <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
                   <div>
-                    <span className="text-slate-400 block text-[11px]">الاستثمار المقدر:</span>
+                    <span className="text-slate-400 block text-[11px]">{t.quizEstimatedInvestment}</span>
                     <span className="text-amber-400 font-black text-lg font-mono">
                       {matchedProgram?.price}
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-400 block text-[11px]">المدة الزمنية:</span>
+                    <span className="text-slate-400 block text-[11px]">{t.quizDurationLabel}</span>
                     <span className="text-white font-bold">
                       {matchedProgram?.duration}
                     </span>
@@ -173,14 +182,14 @@ export const ProgramMatcherQuiz: React.FC<ProgramMatcherQuizProps> = ({ onOpenBo
                   className="w-full sm:w-auto bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black px-8 py-3.5 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-sm cursor-pointer"
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>تأكيد حجز هذا البرنامج الآن</span>
+                  <span>{t.quizBtnConfirm}</span>
                 </button>
                 <button
                   onClick={handleReset}
                   className="w-full sm:w-auto text-slate-400 hover:text-white px-5 py-3.5 rounded-xl border border-white/10 hover:bg-slate-900 transition-colors flex items-center justify-center gap-1.5 text-xs cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  <span>إعادة الاختبار من البداية</span>
+                  <span>{t.quizBtnReset}</span>
                 </button>
               </div>
             </div>

@@ -10,6 +10,16 @@
     font-family: 'Alexandria', 'Cairo', sans-serif;
     letter-spacing: -0.02em;
   }
+
+  html[lang="en"] body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  html[lang="en"] h1, html[lang="en"] h2, html[lang="en"] h3, html[lang="en"] h4, html[lang="en"] h5, html[lang="en"] h6 {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: -0.025em;
+  }
 }
 
 /* Custom dark luxury scrollbar */

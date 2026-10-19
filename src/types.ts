@@ -64,4 +64,5 @@ export interface QuizQuestion {
 }
 
 export type Currency = 'SAR' | 'AED' | 'USD';
+export type Language = 'ar' | 'en';
 
